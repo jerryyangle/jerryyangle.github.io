@@ -4,19 +4,6 @@
   
     
     <entry>
-      <title>树的演化</title>
-      <link href="/jerryyoung123/2022/06/02/%E6%A0%91%E7%9A%84%E6%BC%94%E5%8C%96/"/>
-      <url>/jerryyoung123/2022/06/02/%E6%A0%91%E7%9A%84%E6%BC%94%E5%8C%96/</url>
-      
-        <content type="html"><![CDATA[<h2 id="树的演化"><a href="#树的演化" class="headerlink" title="树的演化"></a>树的演化</h2><h3 id="二叉树（Binary-Search-Tree）"><a href="#二叉树（Binary-Search-Tree）" class="headerlink" title="二叉树（Binary Search Tree）"></a>二叉树（Binary Search Tree）</h3><p>添加节点过程中 并不会对结构进行调整 因此如果数据出现一边倒的局面会使查询效率降低（二分查询就约等于线性查询了）-&gt; 业内俗称“瘸腿二叉树”</p><h3 id="AVL-Tree（Balanced-binary-search-trees）平衡二叉树"><a href="#AVL-Tree（Balanced-binary-search-trees）平衡二叉树" class="headerlink" title="AVL Tree（Balanced binary search trees）平衡二叉树"></a>AVL Tree（Balanced binary search trees）平衡二叉树</h3><p>添加节点后 会对整合树结构进行判断 左右节点的深度相差的绝对值不得超过一（追求完美平衡）如果判断为否整个树要进行调整实现判断标准因此平衡二叉树添加节点时会有频繁的节点调整，对性能影响非常大，但是从一个角度上讲，数据查询效率最高 几乎完全匹配二分查找</p><h3 id="Red-Black-Trees-红黑树"><a href="#Red-Black-Trees-红黑树" class="headerlink" title="Red-Black Trees 红黑树"></a>Red-Black Trees 红黑树</h3><p>舍弃对节点的绝对平衡，保证相对平衡，从而在数据录入和删除的情况下，资源的消耗减少，另一方面又保障二分查找的效率，因此相对而言红黑树的性价比更高。-&gt; HashMap原理</p><ol><li><p>规则</p><p>​        （1）红黑树的节点非红即黑</p><p>​        （2）根节点必须是黑节点</p><p>​        （3）叶子节点也是黑节点</p><p>​        （4）添加新节点默认为红节点</p><p>​        （5）从根节点到叶子节点的每条线路上黑节点总数量一致</p><p>​        （6）红节点下不能有红节点</p></li><li><p>算法-&gt;添加</p><p>​        （1）添加节点为跟节点</p><p>​                添加后变色 红变黑</p><p>​        （2）添加节点的父节点为黑节点</p><p>​                直接添加</p><p>​        （3）添加节点的父节点和叔父节点都为红节点</p><p>​                【父节点（变黑）和叔父节点（变黑）】</p><p>​                【祖父节点（变红）-&gt;自我修正】</p><p>​        （4）添加节点的父节点为红节点和叔父节点为黑节点</p><p>​                添加节点为父节点左节点 父节点为祖父节点的左节点</p><p>​                【以父节点为参照物 右旋】</p><p>​                【父节点（变黑）和祖父节点（变红）分别变色】</p><p>​        （5）添加节点的父节点为红节点 叔父节点为黑节点</p><p>​                添加节点为父节点右节点 父节点为祖父节点的右节点</p><p>​                【以父节点为参照物 左旋】</p><p>​                【父节点（变黑）和祖父节点（变红）分别变色】</p><p>​        （6）添加节点的父节点为红节点 叔父节点为黑节点</p><p>​                添加节点为父节点左节点 父节点为祖父节点的右节点</p><p>​                【以子节点为参照物 右旋】</p><p>​                【以子节点为参照物 左旋】</p><p>​                【子节点（变黑）和祖父节点（变红）分别变色】</p><p>​        （7）添加节点的父节点为红节点 叔父节点为黑节点</p><p>​                添加节点为父节点右节点 父节点为祖父节点的左节点</p><p>​                【以子节点为参照物 左旋】</p><p>​                【以子节点为参照物 右旋】</p><p>​                【子节点（变黑）和祖父节点（变红）分别变色】</p><h3 id="HashMap原理"><a href="#HashMap原理" class="headerlink" title="HashMap原理"></a>HashMap原理</h3><p>​            核心应用 key -&gt; value 键值对</p><p>​                            key 无序不重复 Set</p><p>​                            value有序可重复List</p><p>​            红黑树数据结构（参考以上）</p><p>​            散列算法（hash运算）-&gt; 平衡运算（hash槽 hash桶 “模运算”）</p><p>​                    1.防止内存局部过热</p><p>​                    2.提高（单数据等值）查找效率</p><p>​            注意：hashCode根据内存地址运算 不能推演hashCode相同地址相同</p></li></ol><p>JDK1.8之后 HashMap引用红黑树的数据结构来管理Hash槽中的key</p><p>//扩容<br>static final int DEFAULT_INITIAL_CAPACITY = 1 &lt;&lt; 4; // aka 16<br>static final int MAXIMUM_CAPACITY = 1 &lt;&lt; 30;<br>static final float DEFAULT_LOAD_FACTOR = 0.75f;</p><p>​    </p><p>//槽个数转换阀值 超过64个 才有转换的可能<br>static final int MIN_TREEIFY_CAPACITY = 64;</p><p>//槽中key数量大于8 链表转换为红黑树<br>static final int TREEIFY_THRESHOLD = 8;</p><p>//槽中key数量小于8 红黑树转换为链表<br>static final int UNTREEIFY_THRESHOLD = 6;</p><p><strong>注意：</strong>HashMap主要是做等值查询，根据键找值，不是做范围查询，所以引入了红黑树，不使用B树或者B+树（主要做范围查询）</p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Hello World</title>
       <link href="/jerryyoung123/2022/05/30/hello-world/"/>
       <url>/jerryyoung123/2022/05/30/hello-world/</url>
